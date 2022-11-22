@@ -52,7 +52,6 @@ export default function AtividadeForm(props) {
 
   return (
     <>
-      <h1>Atividade{atividade.id !== 0 ? " " + atividade.id : "s"}</h1>
       <form className="row g-3" onSubmit={handleSubmit}>
         <div className="col-md-6">
           <label className="form-label">Título</label>
@@ -93,22 +92,18 @@ export default function AtividadeForm(props) {
           <hr />
         </div>
         <div className="col-12 mt-0">
-          {atividade.id === 0 ? (
-            <button className="btn btn-outline-secondary">
-              <i className="fa-solid fa-plus me-2"></i>Atividade
+          <button className="btn btn-outline-success" type="submit">
+            <i className="fa-solid fa-plus me-2"></i>Salvar
+          </button>
+          {atividade.id !== 0 ? (
+            <button
+              className="btn btn-outline-warning ms-2"
+              onClick={handleCancelar}
+            >
+              <i className="fa-solid fa-plus me-2"></i>Cancelar
             </button>
           ) : (
-            <>
-              <button className="btn btn-outline-success me-2" type="submit">
-                <i className="fa-solid fa-plus me-2"></i>Salvar
-              </button>
-              <button
-                className="btn btn-outline-warning"
-                onClick={handleCancelar}
-              >
-                <i className="fa-solid fa-plus me-2"></i>Cancelar
-              </button>
-            </>
+            <></>
           )}
         </div>
       </form>
