@@ -9,9 +9,10 @@ import PageNotFound from "./pages/PageNotFound";
 export default function App() {
   return (
     <Routes>
-      <Route path="/" exact element={<Home />} />
-      <Route path="atividade/lista" element={<Atividade />} />
-      <Route path="cliente/lista" element={<Cliente />} />
+      <Route path="/" element={<Home />} />
+      <Route path="atividade/*" element={<Atividade />} />
+      <Route path="cliente/*" element={<Cliente />} />
+      <Route path="cliente/:id/atividade" element={<Atividade />} />
       <Route path="cliente/detalhe" element={<ClienteForm />}>
         <Route path=":id" element={<ClienteForm />} />
       </Route>
