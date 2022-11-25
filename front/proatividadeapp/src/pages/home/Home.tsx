@@ -2,9 +2,19 @@ import { useState, useEffect } from "react";
 import { Card, Row, Col } from "react-bootstrap";
 import TitlePage from "../../components/TitlePage";
 import api from "../../api/atividade";
+import internal from "stream";
 
-export default function Home() {
-  const [atividades, setAtividades] = useState([]);
+type atividadeType = {
+  dataConclusao: string | null;
+  dataCriacao: string;
+  descricao: string;
+  id: number;
+  prioridade: string;
+  titulo: string;
+};
+
+const Home: React.FC = () => {
+  const [atividades, setAtividades] = useState<atividadeType[]>([]);
 
   const pegaTodasAtividades = async () => {
     const response = await api.get("atividade");
@@ -40,7 +50,7 @@ export default function Home() {
           </Col>
           <Col>
             <Card border="secondary">
-              <Card.Header bg={"danger"}>Atividades totais</Card.Header>
+              <Card.Header>Atividades totais</Card.Header>
               <Card.Body>
                 <Card.Title>
                   <h1 className="text-center">{atividades.length}</h1>
@@ -54,10 +64,10 @@ export default function Home() {
               <Card.Body>
                 <Card.Title>
                   <h1 className="text-center">
-                    {
-                      atividades.filter((ativ) => ativ.prioridade === "Alta")
-                        .length
-                    }
+                    {atividades.length > 0
+                      ? atividades.filter((ativ) => ativ.prioridade === "Alta")
+                          .length
+                      : 0}
                   </h1>
                 </Card.Title>
               </Card.Body>
@@ -77,4 +87,6 @@ export default function Home() {
       </div>
     </>
   );
-}
+};
+
+export default Home;

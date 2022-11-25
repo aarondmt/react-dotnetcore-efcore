@@ -1,51 +1,58 @@
 import { useEffect, useState } from "react";
+import { IAtividade, Prioridade } from "../../model/atividade";
+import { AtividadeFormProps } from "../../model/atividadesProps";
 
-const atividadeInicial = {
+const atividadeInicial: IAtividade = {
   id: 0,
   titulo: "",
-  prioridade: 0,
+  prioridade: Prioridade.NaoDefinido,
   descricao: "",
 };
 
-export default function AtividadeForm(props) {
-  const [atividade, setAtividade] = useState(atividadeAtual());
+const AtividadeForm: React.FC<AtividadeFormProps> = ({
+  atividadeSelecionada,
+  atualizarAtividade,
+  addAtividade,
+  cancelarAtividade,
+}: AtividadeFormProps) => {
+  const [atividade, setAtividade] = useState<IAtividade>(atividadeAtual());
 
   useEffect(() => {
-    if (props.atividadeSelecionada.id !== 0) {
-      setAtividade(props.atividadeSelecionada);
+    if (atividadeSelecionada.id !== 0) {
+      setAtividade(atividadeSelecionada);
     }
-  }, [props.atividadeSelecionada]);
+  }, [atividadeSelecionada]);
 
-  function atividadeAtual() {
-    if (props.atividadeSelecionada.id !== 0) {
-      return props.atividadeSelecionada;
+  function atividadeAtual(): IAtividade {
+    if (atividadeSelecionada.id !== 0) {
+      return atividadeSelecionada;
     } else {
       return atividadeInicial;
     }
   }
 
-  const inputTextHandler = (e) => {
+  const handleValue = (e: any) => {
     const { name, value } = e.target;
 
     setAtividade({ ...atividade, [name]: value });
   };
 
-  const handleCancelar = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    props.cancelarAtividade();
+    if (atividadeSelecionada.id !== 0) {
+      atualizarAtividade(atividade);
+    } else {
+      addAtividade(atividade);
+    }
 
     setAtividade(atividadeInicial);
   };
 
-  const handleSubmit = (e) => {
+  const handleCancelar = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (props.atividadeSelecionada.id !== 0) {
-      props.atualizarAtividade(atividade);
-    } else {
-      props.addAtividade(atividade);
-    }
+    cancelarAtividade();
 
     setAtividade(atividadeInicial);
   };
@@ -61,7 +68,7 @@ export default function AtividadeForm(props) {
             className="form-control"
             name="titulo"
             value={atividade.titulo}
-            onChange={inputTextHandler}
+            onChange={handleValue}
           />
         </div>
         <div className="col-md-6">
@@ -71,23 +78,25 @@ export default function AtividadeForm(props) {
             className="form-select"
             name="prioridade"
             value={atividade.prioridade}
-            onChange={inputTextHandler}
+            onChange={handleValue}
           >
-            <option defaultValue="0">Selecione...</option>
-            <option value="1">Baixa</option>
-            <option value="2">Normal</option>
-            <option value="3">Alta</option>
+            {Object.keys(Prioridade).map((pri) =>
+              pri === "NaoDefinido" ? (
+                <option value={pri}>Selecione...</option>
+              ) : (
+                <option value={pri}>{pri}</option>
+              )
+            )}
           </select>
         </div>
         <div className="col-md-12">
           <label className="form-label">Descriação</label>
           <textarea
             id="descricao"
-            type="text"
             className="form-control"
             name="descricao"
             value={atividade.descricao}
-            onChange={inputTextHandler}
+            onChange={handleValue}
           ></textarea>
           <hr />
         </div>
@@ -109,4 +118,6 @@ export default function AtividadeForm(props) {
       </form>
     </>
   );
-}
+};
+
+export default AtividadeForm;

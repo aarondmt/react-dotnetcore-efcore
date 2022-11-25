@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import TitlePage from "../../components/TitlePage";
 import { useNavigate } from "react-router-dom";
@@ -41,11 +41,11 @@ const clientes = [
   },
 ];
 
-export default function ClienteLista() {
+const ClienteLista: React.FC = () => {
   const navigate = useNavigate();
   const [termoBusca, setTermoBusca] = useState("");
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTermoBusca(e.target.value);
   };
 
@@ -115,4 +115,6 @@ export default function ClienteLista() {
       </table>
     </>
   );
-}
+};
+
+export default ClienteLista;

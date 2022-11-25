@@ -4,21 +4,29 @@ import api from "../../api/atividade";
 import AtividadeLista from "./AtividadeLista";
 import AtividadeForm from "./AtividadeForm";
 import TitlePage from "../../components/TitlePage";
+import { IAtividade, Prioridade } from "../../model/atividade";
 
-export default function Atividade() {
+const atividadeInicial: IAtividade = {
+  id: 0,
+  titulo: "",
+  prioridade: Prioridade.NaoDefinido,
+  descricao: "",
+};
+
+const Atividade: React.FC = () => {
   const [show, setShow] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [atividades, setAtividades] = useState([]);
-  const [atividade, setAtividade] = useState({ id: 0 });
+  const [atividades, setAtividades] = useState<IAtividade[]>([]);
+  const [atividade, setAtividade] = useState<IAtividade>(atividadeInicial);
 
   const handleAtividadeModa = () => setShow(!show);
 
-  const handleConfirmModal = (id) => {
+  const handleConfirmModal = (id?: number) => {
     if (id !== 0 && id !== undefined) {
       const atividade = atividades.filter((item) => item.id === id);
       setAtividade(atividade[0]);
     } else {
-      setAtividade({ id: 0 });
+      setAtividade(atividadeInicial);
     }
     setShowConfirmModal(!showConfirmModal);
   };
@@ -38,23 +46,23 @@ export default function Atividade() {
     getAtividades();
   }, []);
 
-  const addAtividade = async (ativ) => {
+  const addAtividade = async (ativ: IAtividade) => {
     const response = await api.post("atividade", ativ);
     setAtividades([...atividades, response.data]);
     handleAtividadeModa();
   };
 
   const novaAtividade = () => {
-    setAtividade({ id: 0 });
+    setAtividade(atividadeInicial);
     handleAtividadeModa();
   };
 
   const cancelarAtividade = () => {
     handleAtividadeModa();
-    setAtividade({ id: 0 });
+    setAtividade(atividadeInicial);
   };
 
-  const deletarAtividade = async (id) => {
+  const deletarAtividade = async (id: number) => {
     handleConfirmModal(0);
     if (await api.delete(`atividade/${id}`)) {
       const atividadesFiltradas = atividades.filter((item) => item.id !== id);
@@ -62,20 +70,20 @@ export default function Atividade() {
     }
   };
 
-  const editarAtividade = (id) => {
+  const editarAtividade = (id: number) => {
     const atividade = atividades.filter((item) => item.id === id);
     setAtividade(atividade[0]);
     handleAtividadeModa();
   };
 
-  const atualizarAtividade = async (ativ) => {
+  const atualizarAtividade = async (ativ: IAtividade) => {
     const response = await api.put(`atividade/${ativ.id}`, ativ);
     handleAtividadeModa();
     const { id } = response.data;
     setAtividades(
       atividades.map((item) => (item.id === id ? response.data : item))
     );
-    setAtividade({ id: 0 });
+    setAtividade(atividadeInicial);
   };
 
   return (
@@ -101,7 +109,6 @@ export default function Atividade() {
         <Modal.Body>
           <AtividadeForm
             addAtividade={addAtividade}
-            atividades={atividades}
             atividadeSelecionada={atividade}
             atualizarAtividade={atualizarAtividade}
             cancelarAtividade={cancelarAtividade}
@@ -135,4 +142,6 @@ export default function Atividade() {
       </Modal>
     </>
   );
-}
+};
+
+export default Atividade;
